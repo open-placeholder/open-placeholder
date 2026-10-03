@@ -25,6 +25,11 @@ export default async function Home() {
       url: '/1200x400/Coming%20Soon',
       description: 'Perfect for hero sections',
     },
+    {
+      title: 'Pattern Background',
+      url: '/600x300/Polished?pattern=grid',
+      description: 'Add grid, dots, or stripes with ?pattern=',
+    },
   ];
 
   return (
@@ -87,6 +92,18 @@ export default async function Home() {
                 Add custom text after dimensions (URL encode special characters)
               </p>
             </div>
+
+            <div className='bg-gray-800 rounded p-4'>
+              <h3 className='text-lg font-semibold text-white mb-2'>
+                Pattern Backgrounds
+              </h3>
+              <code className='text-green-400 bg-gray-950 px-2 py-1 rounded'>
+                https://openplaceholder.com/[width]x[height]?pattern=grid
+              </code>
+              <p className='text-gray-400 mt-2'>
+                Use grid, dots, stripes, or none. None is the default.
+              </p>
+            </div>
           </div>
         </div>
 
@@ -133,6 +150,10 @@ export default async function Home() {
             <li className='flex items-start'>
               <span className='text-green-400 mr-2'>✓</span>
               <span>Custom text support with automatic font sizing</span>
+            </li>
+            <li className='flex items-start'>
+              <span className='text-green-400 mr-2'>✓</span>
+              <span>Optional grid, dots, and stripes pattern backgrounds</span>
             </li>
             <li className='flex items-start'>
               <span className='text-green-400 mr-2'>✓</span>

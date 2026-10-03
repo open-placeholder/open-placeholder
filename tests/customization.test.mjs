@@ -3,6 +3,39 @@ import test from 'node:test';
 import { startServer } from './helpers/server.mjs';
 import { readPng } from './helpers/png.mjs';
 
+test('patterns preserve defaults and compose with themes, palettes, and layouts', async (t) => {
+  const baseUrl = await startServer(t);
+  const path = '600x400/Hello';
+  const baseline = await readPng(baseUrl, path);
+  for (const pattern of ['grid', 'dots', 'stripes']) {
+    assert.notDeepEqual(
+      await readPng(baseUrl, `${path}?pattern=${pattern}`),
+      baseline,
+      pattern,
+    );
+    for (const style of ['theme=gradient', 'palette=indigo']) {
+      assert.notDeepEqual(
+        await readPng(baseUrl, `${path}?${style}&pattern=${pattern}`),
+        await readPng(baseUrl, `${path}?${style}`),
+      );
+    }
+  }
+  for (const pattern of ['none', 'invalid']) {
+    assert.deepEqual(
+      await readPng(baseUrl, `${path}?pattern=${pattern}`),
+      baseline,
+    );
+  }
+  for (const layout of ['hero', 'badge', 'split', 'poster']) {
+    await readPng(
+      baseUrl,
+      `1x1/Hello?layout=${layout}&pattern=grid&theme=gradient&subtitle=Soon&padding=80&size=72&weight=700&align=right&valign=bottom`,
+      1,
+      1,
+    );
+  }
+});
+
 test('typography uses real font weights and safe sizes', async (t) => {
   const baseUrl = await startServer(t);
   const path = '600x400/Hello';

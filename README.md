@@ -71,7 +71,15 @@ https://openplaceholder.com/wide/Video%20Thumbnail
 
 ## 📖 API Reference
 
-### Layout presets
+### Pattern backgrounds
+
+Use `?pattern=grid|dots|stripes|none` for a tiled background. Patterns use the foreground color at low opacity and work with themes, palettes, and layouts without replacing theme gradients. `none` is the default; unknown values also preserve the original background.
+
+```
+https://openplaceholder.com/og/Product%20Launch?theme=gradient&pattern=dots&layout=hero
+```
+
+### Layouts and text controls
 
 Use `?size=72&weight=700` for typography controls. Weights `400`, `500`, `600`, and `700` use bundled Geist font files. Size is clamped between 1 and 512 pixels, then capped at one third of the shorter image dimension for safe rendering; layout title scales still apply. Omitted or invalid values keep automatic sizing and regular weight.
 
@@ -109,6 +117,15 @@ https://openplaceholder.com/[shortcut]/[text]
 | `height` | number | Image height in pixels (1-4000) | `400` |
 | `shortcut` | string | Optional preset size (`og`, `banner`, `wide`) | `og` |
 | `text` | string | Optional custom text (URL encoded) | `Hello%20World` |
+| `theme` | query string | Theme preset: `light`, `dark`, `mono`, or `gradient` | `?theme=dark` |
+| `palette` | query string | Named colors: `slate`, `indigo`, or `sunset` | `?palette=indigo` |
+| `bg`, `fg` | query string | Background and text colors, as three or six hex digits | `?bg=111827&fg=ffffff` |
+| `layout` | query string | Banner composition: `hero`, `badge`, `split`, or `poster` | `?layout=hero` |
+| `padding` | query string | Outer safe area in pixels, clamped to the image size | `?padding=80` |
+| `subtitle` | query string | Secondary text, URL encoded | `?subtitle=Shipping%20soon` |
+| `align`, `valign` | query string | Horizontal and vertical text alignment | `?align=left&valign=top` |
+| `size`, `weight` | query string | Text size and font weight | `?size=72&weight=700` |
+| `pattern` | query string | Background pattern: `grid`, `dots`, `stripes`, or `none` | `?pattern=dots` |
 
 ### Examples
 

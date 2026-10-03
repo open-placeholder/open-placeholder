@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 import type { PlaceholderOptions } from './parser';
 import { getFontWeight, getPlaceholderStyle } from './styles';
+import { getPattern, renderPattern } from './patterns';
 
 const horizontalAlignment = {
   left: 'flex-start',
@@ -18,6 +19,7 @@ export function renderPlaceholder(
   query: URLSearchParams,
 ) {
   const { width, height, layout } = options;
+  const pattern = getPattern(query);
   const align = (['left', 'center', 'right'] as const).find(
     (value) => value === query.get('align'),
   );
@@ -134,7 +136,9 @@ export function renderPlaceholder(
     fontWeight,
     padding,
     ...(backgroundImage ? { backgroundImage } : {}),
-    ...(layout ? { position: 'relative', overflow: 'hidden' } : {}),
+    ...(layout || pattern !== 'none'
+      ? { position: 'relative', overflow: 'hidden' }
+      : {}),
   };
   let content: ReactNode = textBlock;
 
@@ -245,6 +249,12 @@ export function renderPlaceholder(
   } else {
     if (align) rootStyle.justifyContent = horizontalAlignment[align];
     if (valign) rootStyle.alignItems = verticalAlignment[valign];
+  }
+  if (pattern !== 'none') {
+    content = [
+      renderPattern(pattern, width, height, foregroundColor),
+      ...(Array.isArray(content) ? content : [content]),
+    ];
   }
   return <div style={rootStyle}>{content}</div>;
 }
