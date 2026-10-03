@@ -73,6 +73,8 @@ https://openplaceholder.com/wide/Video%20Thumbnail
 
 ### Layout presets
 
+Use `?align=left|center|right` and `?valign=top|center|bottom` to align text. Plain placeholders default to center/center. Layouts retain their preset positioning unless a valid alignment override is supplied; subtitles follow the title's alignment.
+
 Use `?subtitle=Shipping%20soon` for secondary text below the title in any layout. Subtitles are limited to 200 characters and wrap within a two-line area. Empty or omitted subtitles preserve single-text images.
 
 Use `?padding=80` to control the outer safe area in pixels across layouts. Padding is clamped between zero and one quarter of the shorter image dimension so text still has room on tiny images. Omitted or invalid padding keeps the current spacing.
