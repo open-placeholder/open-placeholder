@@ -71,6 +71,10 @@ https://openplaceholder.com/wide/Video%20Thumbnail
 
 ## 📖 API Reference
 
+### Layout presets
+
+Use `?layout=hero|badge|split|poster` for banner compositions. Layouts work with dimensions and shortcuts, such as `https://openplaceholder.com/og/Product%20Launch?layout=hero&theme=gradient`. Themes, palettes, and explicit colors override layout colors. Unknown layouts retain the centered default.
+
 ### Themes, colors and palettes
 
 Use `?theme=light|dark|mono|gradient` for a theme preset. For example, `https://openplaceholder.com/og/Product%20Launch?theme=gradient` creates a gradient social preview. With no theme, the existing output stays unchanged. Explicit colors override palettes, which override themes. A valid `bg` or palette replaces a theme's gradient with a solid background.
