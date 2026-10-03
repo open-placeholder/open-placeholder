@@ -1,5 +1,15 @@
 import type { PlaceholderLayout } from './parser';
 
+export type PlaceholderFontWeight = 400 | 500 | 600 | 700;
+
+export function getFontWeight(params: URLSearchParams): PlaceholderFontWeight {
+  return (
+    ([400, 500, 600, 700] as const).find(
+      (weight) => weight === Number(params.get('weight')),
+    ) ?? 400
+  );
+}
+
 interface PlaceholderColors {
   backgroundColor: string;
   foregroundColor: string;
