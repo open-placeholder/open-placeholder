@@ -3,6 +3,25 @@ import test from 'node:test';
 import { startServer } from './helpers/server.mjs';
 import { readPng } from './helpers/png.mjs';
 
+test('subtitles render across layouts and empty subtitles preserve the original', async (t) => {
+  const baseUrl = await startServer(t);
+  const path = '600x400/Hello';
+  const baseline = await readPng(baseUrl, path);
+  assert.notDeepEqual(
+    await readPng(baseUrl, `${path}?subtitle=Shipping%20soon%20%26%20more`),
+    baseline,
+  );
+  assert.deepEqual(await readPng(baseUrl, `${path}?subtitle=`), baseline);
+  const subtitle = encodeURIComponent('Long subtitle '.repeat(30));
+  for (const layout of ['hero', 'badge', 'split', 'poster']) {
+    await readPng(
+      baseUrl,
+      `600x400/Hello?layout=${layout}&subtitle=${subtitle}`,
+    );
+    await readPng(baseUrl, `1x1/Hello?layout=${layout}&subtitle=Soon`, 1, 1);
+  }
+});
+
 test('padding changes spacing and clamps safely on tiny images', async (t) => {
   const baseUrl = await startServer(t);
   const path = '600x400/WWWWWWWWWW';
