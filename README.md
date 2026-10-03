@@ -26,7 +26,6 @@ Open Placeholder is a high-performance placeholder image generator built with Ne
 - 🚀 **Edge Runtime** - Lightning-fast image generation at the edge
 - 📐 **Flexible Sizing** - Support for any dimensions up to 4000x4000 pixels
 - 📝 **Custom Text** - Display custom text instead of dimensions
-- 🧩 **Pattern Backgrounds** - Optional grid, dots, and stripes patterns
 - 💾 **Smart Caching** - Optimized with CDN cache headers for performance
 - 🎨 **Clean Design** - Minimalist aesthetic with Geist font
 - 🔧 **Zero Configuration** - Works out of the box with sensible defaults
@@ -55,21 +54,59 @@ Display custom text instead of dimensions:
 https://openplaceholder.com/600x300/Hello%20World
 ```
 
-### Pattern Backgrounds
+### Shortcut Sizes
 
-Add a generated background pattern:
+Use common aspect-ratio shortcuts without typing dimensions:
 ```
-https://openplaceholder.com/600x300/Hello%20World?pattern=grid
+https://openplaceholder.com/og/Product%20Launch
+https://openplaceholder.com/banner/Hero%20Banner
+https://openplaceholder.com/wide/Video%20Thumbnail
 ```
 
-Supported values are `grid`, `dots`, `stripes`, and `none`. The default is `none`.
+| Shortcut | Dimensions | Common use |
+|----------|------------|------------|
+| `og` | 1200x630 | Open Graph/social preview images |
+| `banner` | 1200x400 | Hero and page banners |
+| `wide` | 1600x900 | 16:9 thumbnails and previews |
 
 ## 📖 API Reference
+
+### Pattern backgrounds
+
+Use `?pattern=grid|dots|stripes|none` for a tiled background. Patterns use the foreground color at low opacity and work with themes, palettes, and layouts without replacing theme gradients. `none` is the default; unknown values also preserve the original background.
+
+```
+https://openplaceholder.com/og/Product%20Launch?theme=gradient&pattern=dots&layout=hero
+```
+
+### Layouts and text controls
+
+Use `?size=72&weight=700` for typography controls. Weights `400`, `500`, `600`, and `700` use bundled Geist font files. Size is clamped between 1 and 512 pixels, then capped at one third of the shorter image dimension for safe rendering; layout title scales still apply. Omitted or invalid values keep automatic sizing and regular weight.
+
+Use `?align=left|center|right` and `?valign=top|center|bottom` to align text. Plain placeholders default to center/center. Layouts retain their preset positioning unless a valid alignment override is supplied; subtitles follow the title's alignment.
+
+Use `?subtitle=Shipping%20soon` for secondary text below the title in any layout. Subtitles are limited to 200 characters and wrap within a two-line area. Empty or omitted subtitles preserve single-text images.
+
+Use `?padding=80` to control the outer safe area in pixels across layouts. Padding is clamped between zero and one quarter of the shorter image dimension so text still has room on tiny images. Omitted or invalid padding keeps the current spacing.
+
+Use `?layout=hero|badge|split|poster` for banner compositions. Layouts work with dimensions and shortcuts, such as `https://openplaceholder.com/og/Product%20Launch?layout=hero&theme=gradient`. Themes, palettes, and explicit colors override layout colors. Unknown layouts retain the centered default.
+
+### Themes, colors and palettes
+
+Use `?theme=light|dark|mono|gradient` for a theme preset. For example, `https://openplaceholder.com/og/Product%20Launch?theme=gradient` creates a gradient social preview. With no theme, the existing output stays unchanged. Explicit colors override palettes, which override themes. A valid `bg` or palette replaces a theme's gradient with a solid background.
+
+Use `?bg=111827&fg=ffffff` for background and text colors, or `?palette=slate|indigo|sunset` for a named palette. Colors accept three or six hex digits. Explicit `bg` and `fg` values override the palette; invalid values fall back to the palette or the existing default colors.
+
+```
+https://openplaceholder.com/600x400/Hello%20World?palette=indigo
+https://openplaceholder.com/600x400/Hello%20World?bg=111827&fg=ffffff
+```
 
 ### URL Format
 
 ```
 https://openplaceholder.com/[width]x[height]/[text]
+https://openplaceholder.com/[shortcut]/[text]
 ```
 
 ### Parameters
@@ -78,8 +115,17 @@ https://openplaceholder.com/[width]x[height]/[text]
 |-----------|------|-------------|---------|
 | `width` | number | Image width in pixels (1-4000) | `600` |
 | `height` | number | Image height in pixels (1-4000) | `400` |
+| `shortcut` | string | Optional preset size (`og`, `banner`, `wide`) | `og` |
 | `text` | string | Optional custom text (URL encoded) | `Hello%20World` |
-| `pattern` | query string | Optional background pattern. Defaults to `none`; valid values are `grid`, `dots`, `stripes`, and `none`. | `grid` |
+| `theme` | query string | Theme preset: `light`, `dark`, `mono`, or `gradient` | `?theme=dark` |
+| `palette` | query string | Named colors: `slate`, `indigo`, or `sunset` | `?palette=indigo` |
+| `bg`, `fg` | query string | Background and text colors, as three or six hex digits | `?bg=111827&fg=ffffff` |
+| `layout` | query string | Banner composition: `hero`, `badge`, `split`, or `poster` | `?layout=hero` |
+| `padding` | query string | Outer safe area in pixels, clamped to the image size | `?padding=80` |
+| `subtitle` | query string | Secondary text, URL encoded | `?subtitle=Shipping%20soon` |
+| `align`, `valign` | query string | Horizontal and vertical text alignment | `?align=left&valign=top` |
+| `size`, `weight` | query string | Text size and font weight | `?size=72&weight=700` |
+| `pattern` | query string | Background pattern: `grid`, `dots`, `stripes`, or `none` | `?pattern=dots` |
 
 ### Examples
 
@@ -103,9 +149,31 @@ https://openplaceholder.com/[width]x[height]/[text]
 <img src="https://openplaceholder.com/1200x400/Hero%20Banner" alt="Hero Banner">
 ```
 
-#### Pattern Background
+#### Shortcut Size
 ```html
-<img src="https://openplaceholder.com/600x300/Hello%20World?pattern=dots" alt="Pattern placeholder">
+<img src="https://openplaceholder.com/og/Product%20Launch" alt="Product Launch">
+```
+
+
+## 🤖 Agent Skill
+
+Use Open Placeholder automatically in generated frontend code with the companion agent skill:
+
+```bash
+npx skills add open-placeholder/skills
+```
+
+Claude Code plugin:
+
+```txt
+/plugin marketplace add open-placeholder/skills
+/plugin install open-placeholder@open-placeholder
+```
+
+Codex plugin:
+
+```bash
+codex plugin marketplace add open-placeholder/skills
 ```
 
 ## 🛠️ Built With
@@ -123,13 +191,13 @@ https://openplaceholder.com/[width]x[height]/[text]
 
 Deploy your own instance with one click:
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fakshitkrnagpal%2Fopen-placeholder)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fopen-placeholder%2Fopen-placeholder)
 
 ### Deploy to Diploi 
 
 Launch Open Placeholder on Diploi in one click and get a live instance running in seconds.
 
-[![launch with diploi button](https://diploi.com/launch-big.svg)](https://diploi.com/launch/akshitkrnagpal/open-placeholder)
+[![launch with diploi button](https://diploi.com/launch-big.svg)](https://diploi.com/launch/open-placeholder/open-placeholder)
 
 Learn more on [Diploi](https://diploi.com/).
 
@@ -137,7 +205,7 @@ Learn more on [Diploi](https://diploi.com/).
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/akshitkrnagpal/open-placeholder.git
+git clone https://github.com/open-placeholder/open-placeholder.git
 cd open-placeholder
 ```
 
@@ -161,6 +229,25 @@ npm run build
 npm run start
 ```
 
+### 🐳 Docker
+
+Pull and run the pre-built image from GitHub Container Registry:
+
+```bash
+docker run --rm -p 3000:3000 ghcr.io/open-placeholder/open-placeholder:latest
+```
+
+Or build the image yourself:
+
+```bash
+git clone https://github.com/open-placeholder/open-placeholder.git
+cd open-placeholder
+docker build -t open-placeholder .
+docker run --rm -p 3000:3000 open-placeholder
+```
+
+The app will be available at `http://localhost:3000`.
+
 ### Environment Variables
 
 No environment variables are required for basic functionality. The app works out of the box!
@@ -176,7 +263,7 @@ No environment variables are required for basic functionality. The app works out
 
 ```bash
 # Clone the repo
-git clone https://github.com/akshitkrnagpal/open-placeholder.git
+git clone https://github.com/open-placeholder/open-placeholder.git
 cd open-placeholder
 
 # Install dependencies
@@ -190,6 +277,9 @@ pnpm build
 
 # Run production build
 pnpm start
+
+# Build and test image endpoints
+pnpm test
 
 # Run linter
 pnpm lint
@@ -234,8 +324,8 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## 📊 Stats
 
-![GitHub stars](https://img.shields.io/github/stars/akshitkrnagpal/open-placeholder?style=social)
-![GitHub forks](https://img.shields.io/github/forks/akshitkrnagpal/open-placeholder?style=social)
+![GitHub stars](https://img.shields.io/github/stars/open-placeholder/open-placeholder?style=social)
+![GitHub forks](https://img.shields.io/github/forks/open-placeholder/open-placeholder?style=social)
 
 ---
 

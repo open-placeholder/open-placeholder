@@ -16,7 +16,7 @@ const schema = z
 export const getGithubRepoData = async () => {
   try {
     const response = await fetch(
-      `https://api.github.com/repos/akshitkrnagpal/open-placeholder`,
+      `https://api.github.com/repos/open-placeholder/open-placeholder`,
       {
         next: { revalidate: 3600 }, // Cache for 1 hour
       }
