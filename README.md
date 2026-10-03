@@ -189,6 +189,25 @@ npm run build
 npm run start
 ```
 
+### 🐳 Docker
+
+Pull and run the pre-built image from GitHub Container Registry:
+
+```bash
+docker run --rm -p 3000:3000 ghcr.io/open-placeholder/open-placeholder:latest
+```
+
+Or build the image yourself:
+
+```bash
+git clone https://github.com/open-placeholder/open-placeholder.git
+cd open-placeholder
+docker build -t open-placeholder .
+docker run --rm -p 3000:3000 open-placeholder
+```
+
+The app will be available at `http://localhost:3000`.
+
 ### Environment Variables
 
 No environment variables are required for basic functionality. The app works out of the box!

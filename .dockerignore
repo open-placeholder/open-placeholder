@@ -1,0 +1,14 @@
+.git
+.github
+.next
+node_modules
+npm-debug.log*
+README.md
+CLAUDE.md
+CODE_OF_CONDUCT.md
+.DS_Store
+*.tsbuildinfo
+.vercel
+Dockerfile
+.dockerignore
+.env*

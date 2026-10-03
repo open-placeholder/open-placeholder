@@ -4,6 +4,8 @@ import { once } from 'node:events';
 import test from 'node:test';
 
 async function startServer(t) {
+  if (process.env.PLACEHOLDER_BASE_URL) return process.env.PLACEHOLDER_BASE_URL;
+
   const server = spawn(
     process.execPath,
     [
