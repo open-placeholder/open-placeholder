@@ -2,11 +2,28 @@ import type { CSSProperties, ReactNode } from 'react';
 import type { PlaceholderOptions } from './parser';
 import { getPlaceholderStyle } from './styles';
 
+const horizontalAlignment = {
+  left: 'flex-start',
+  center: 'center',
+  right: 'flex-end',
+} as const;
+const verticalAlignment = {
+  top: 'flex-start',
+  center: 'center',
+  bottom: 'flex-end',
+} as const;
+
 export function renderPlaceholder(
   options: PlaceholderOptions,
   query: URLSearchParams,
 ) {
   const { width, height, layout } = options;
+  const align = (['left', 'center', 'right'] as const).find(
+    (value) => value === query.get('align'),
+  );
+  const valign = (['top', 'center', 'bottom'] as const).find(
+    (value) => value === query.get('valign'),
+  );
   const dimensionsText = `${width} x ${height}`;
   const displayText = options.text || dimensionsText;
   const scale = Math.min(width, height);
@@ -29,6 +46,8 @@ export function renderPlaceholder(
     ),
     scale / 4,
   );
+  const textAlign =
+    align ?? (layout === 'hero' || layout === 'split' ? 'left' : 'center');
   const textStyles: CSSProperties = {
     fontSize:
       fontSize *
@@ -40,7 +59,7 @@ export function renderPlaceholder(
             ? 0.9
             : 1),
     fontFamily: 'Geist',
-    textAlign: layout === 'hero' || layout === 'split' ? 'left' : 'center',
+    textAlign,
     wordBreak: 'break-word',
     margin: 0,
     maxWidth: '100%',
@@ -60,7 +79,7 @@ export function renderPlaceholder(
         flexDirection: 'column',
         width: '100%',
         gap: Math.min(12, scale / 25),
-        alignItems: textStyles.textAlign === 'left' ? 'flex-start' : 'center',
+        alignItems: horizontalAlignment[textAlign],
       }}
     >
       {title}
@@ -86,7 +105,12 @@ export function renderPlaceholder(
   const label = (
     <div
       key='dimensions'
-      style={{ display: 'flex', fontSize: fontSize * 0.22, opacity: 0.72 }}
+      style={{
+        display: 'flex',
+        fontSize: fontSize * 0.22,
+        opacity: 0.72,
+        ...(align ? { justifyContent: horizontalAlignment[align] } : {}),
+      }}
     >
       {dimensionsText}
     </div>
@@ -143,7 +167,7 @@ export function renderPlaceholder(
           style={{
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center',
+            alignItems: align ? horizontalAlignment[align] : 'center',
             gap: Math.min(18, scale / 20),
             maxWidth: '100%',
             padding: Math.min(28, scale / 16),
@@ -163,7 +187,8 @@ export function renderPlaceholder(
           style={{
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'center',
+            justifyContent: valign ? verticalAlignment[valign] : 'center',
+            ...(align ? { alignItems: horizontalAlignment[align] } : {}),
             width: '58%',
             height: '100%',
             backgroundColor: foregroundColor,
@@ -176,8 +201,8 @@ export function renderPlaceholder(
           key='dimensions'
           style={{
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+            alignItems: valign ? verticalAlignment[valign] : 'center',
+            justifyContent: align ? horizontalAlignment[align] : 'center',
             width: '42%',
             height: '100%',
           }}
@@ -205,5 +230,12 @@ export function renderPlaceholder(
       break;
   }
 
+  if (rootStyle.flexDirection === 'column') {
+    if (align) rootStyle.alignItems = horizontalAlignment[align];
+    if (valign) rootStyle.justifyContent = verticalAlignment[valign];
+  } else {
+    if (align) rootStyle.justifyContent = horizontalAlignment[align];
+    if (valign) rootStyle.alignItems = verticalAlignment[valign];
+  }
   return <div style={rootStyle}>{content}</div>;
 }

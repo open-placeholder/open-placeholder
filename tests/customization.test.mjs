@@ -3,6 +3,38 @@ import test from 'node:test';
 import { startServer } from './helpers/server.mjs';
 import { readPng } from './helpers/png.mjs';
 
+test('alignment moves text and invalid values preserve defaults', async (t) => {
+  const baseUrl = await startServer(t);
+  const path = '600x400/Hello';
+  const baseline = await readPng(baseUrl, path);
+  for (const query of [
+    'align=left',
+    'align=right',
+    'valign=top',
+    'valign=bottom',
+  ]) {
+    assert.notDeepEqual(
+      await readPng(baseUrl, `${path}?${query}`),
+      baseline,
+      query,
+    );
+  }
+  assert.deepEqual(
+    await readPng(baseUrl, `${path}?align=center&valign=center`),
+    baseline,
+  );
+  assert.deepEqual(
+    await readPng(baseUrl, `${path}?align=invalid&valign=invalid`),
+    baseline,
+  );
+  for (const layout of ['hero', 'badge', 'split', 'poster']) {
+    await readPng(
+      baseUrl,
+      `${path}?layout=${layout}&align=right&valign=bottom&subtitle=Soon`,
+    );
+  }
+});
+
 test('subtitles render across layouts and empty subtitles preserve the original', async (t) => {
   const baseUrl = await startServer(t);
   const path = '600x400/Hello';
