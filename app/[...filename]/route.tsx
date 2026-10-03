@@ -59,7 +59,7 @@ export async function GET(_request: Request, { params }: { params: Params }) {
           width: '100%',
           height: '100%',
           backgroundColor,
-          backgroundImage,
+          ...(backgroundImage ? { backgroundImage } : {}),
           color: foregroundColor,
           padding,
         }}
