@@ -71,6 +71,15 @@ https://openplaceholder.com/wide/Video%20Thumbnail
 
 ## 📖 API Reference
 
+### Colors and palettes
+
+Use `?bg=111827&fg=ffffff` for background and text colors, or `?palette=slate|indigo|sunset` for a named palette. Colors accept three or six hex digits. Explicit `bg` and `fg` values override the palette; invalid values fall back to the palette or the existing default colors.
+
+```
+https://openplaceholder.com/600x400/Hello%20World?palette=indigo
+https://openplaceholder.com/600x400/Hello%20World?bg=111827&fg=ffffff
+```
+
 ### URL Format
 
 ```
