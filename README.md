@@ -73,6 +73,8 @@ https://openplaceholder.com/wide/Video%20Thumbnail
 
 ### Layout presets
 
+Use `?subtitle=Shipping%20soon` for secondary text below the title in any layout. Subtitles are limited to 200 characters and wrap within a two-line area. Empty or omitted subtitles preserve single-text images.
+
 Use `?padding=80` to control the outer safe area in pixels across layouts. Padding is clamped between zero and one quarter of the shorter image dimension so text still has room on tiny images. Omitted or invalid padding keeps the current spacing.
 
 Use `?layout=hero|badge|split|poster` for banner compositions. Layouts work with dimensions and shortcuts, such as `https://openplaceholder.com/og/Product%20Launch?layout=hero&theme=gradient`. Themes, palettes, and explicit colors override layout colors. Unknown layouts retain the centered default.

@@ -50,6 +50,39 @@ export function renderPlaceholder(
       {displayText}
     </h1>
   );
+  const subtitle = Array.from(query.get('subtitle')?.trim() ?? '')
+    .slice(0, 200)
+    .join('');
+  const textBlock = subtitle ? (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+        gap: Math.min(12, scale / 25),
+        alignItems: textStyles.textAlign === 'left' ? 'flex-start' : 'center',
+      }}
+    >
+      {title}
+      <div
+        style={{
+          display: 'flex',
+          fontFamily: 'Geist',
+          fontSize: fontSize * 0.36,
+          lineHeight: 1.3,
+          textAlign: textStyles.textAlign,
+          wordBreak: 'break-word',
+          maxWidth: '100%',
+          maxHeight: fontSize * 0.36 * 1.3 * 2,
+          overflow: 'hidden',
+        }}
+      >
+        {subtitle}
+      </div>
+    </div>
+  ) : (
+    title
+  );
   const label = (
     <div
       key='dimensions'
@@ -70,7 +103,7 @@ export function renderPlaceholder(
     ...(backgroundImage ? { backgroundImage } : {}),
     ...(layout ? { position: 'relative', overflow: 'hidden' } : {}),
   };
-  let content: ReactNode = title;
+  let content: ReactNode = textBlock;
 
   switch (layout) {
     case 'hero':
@@ -100,7 +133,7 @@ export function renderPlaceholder(
           }}
         >
           {label}
-          {title}
+          {textBlock}
         </div>,
       ];
       break;
@@ -118,7 +151,7 @@ export function renderPlaceholder(
             borderRadius: '9999px',
           }}
         >
-          {title}
+          {textBlock}
           {label}
         </div>
       );
@@ -137,7 +170,7 @@ export function renderPlaceholder(
             color: backgroundColor,
           }}
         >
-          {title}
+          {textBlock}
         </div>,
         <div
           key='dimensions'
@@ -166,7 +199,7 @@ export function renderPlaceholder(
             backgroundColor: foregroundColor,
           }}
         />,
-        title,
+        textBlock,
         label,
       ];
       break;
