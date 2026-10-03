@@ -3,6 +3,36 @@ import test from 'node:test';
 import { startServer } from './helpers/server.mjs';
 import { readPng } from './helpers/png.mjs';
 
+test('typography uses real font weights and safe sizes', async (t) => {
+  const baseUrl = await startServer(t);
+  const path = '600x400/Hello';
+  const baseline = await readPng(baseUrl, path);
+  for (const query of ['size=72', 'weight=500', 'weight=600', 'weight=700']) {
+    assert.notDeepEqual(
+      await readPng(baseUrl, `${path}?${query}`),
+      baseline,
+      query,
+    );
+  }
+  assert.deepEqual(await readPng(baseUrl, `${path}?weight=400`), baseline);
+  assert.deepEqual(
+    await readPng(baseUrl, `${path}?size=invalid&weight=999`),
+    baseline,
+  );
+  assert.deepEqual(
+    await readPng(baseUrl, `${path}?size=1000000`),
+    await readPng(baseUrl, `${path}?size=512`),
+  );
+  for (const layout of ['hero', 'badge', 'split', 'poster']) {
+    await readPng(
+      baseUrl,
+      `1x1/WWWW?layout=${layout}&subtitle=Soon&padding=1000&size=512&weight=700`,
+      1,
+      1,
+    );
+  }
+});
+
 test('alignment moves text and invalid values preserve defaults', async (t) => {
   const baseUrl = await startServer(t);
   const path = '600x400/Hello';

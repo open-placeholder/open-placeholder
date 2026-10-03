@@ -73,6 +73,8 @@ https://openplaceholder.com/wide/Video%20Thumbnail
 
 ### Layout presets
 
+Use `?size=72&weight=700` for typography controls. Weights `400`, `500`, `600`, and `700` use bundled Geist font files. Size is clamped between 1 and 512 pixels, then capped at one third of the shorter image dimension for safe rendering; layout title scales still apply. Omitted or invalid values keep automatic sizing and regular weight.
+
 Use `?align=left|center|right` and `?valign=top|center|bottom` to align text. Plain placeholders default to center/center. Layouts retain their preset positioning unless a valid alignment override is supplied; subtitles follow the title's alignment.
 
 Use `?subtitle=Shipping%20soon` for secondary text below the title in any layout. Subtitles are limited to 200 characters and wrap within a two-line area. Empty or omitted subtitles preserve single-text images.

@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react';
 import type { PlaceholderOptions } from './parser';
-import { getPlaceholderStyle } from './styles';
+import { getFontWeight, getPlaceholderStyle } from './styles';
 
 const horizontalAlignment = {
   left: 'flex-start',
@@ -27,9 +27,16 @@ export function renderPlaceholder(
   const dimensionsText = `${width} x ${height}`;
   const displayText = options.text || dimensionsText;
   const scale = Math.min(width, height);
-  const fontSize =
+  const defaultFontSize =
     (scale / 5) *
     (displayText.length > 20 ? 0.6 : displayText.length > 10 ? 0.8 : 1);
+  const sizeParam = query.get('size');
+  const requestedSize = sizeParam?.trim() ? Number(sizeParam) : NaN;
+  const fontSize =
+    Number.isFinite(requestedSize) && requestedSize > 0
+      ? Math.min(512, scale / 3, Math.max(1, requestedSize))
+      : defaultFontSize;
+  const fontWeight = getFontWeight(query);
   const { backgroundColor, foregroundColor, backgroundImage } =
     getPlaceholderStyle(query, layout);
   const spacing = { hero: 56, badge: 32, split: 48, poster: 44 };
@@ -59,6 +66,7 @@ export function renderPlaceholder(
             ? 0.9
             : 1),
     fontFamily: 'Geist',
+    fontWeight,
     textAlign,
     wordBreak: 'break-word',
     margin: 0,
@@ -123,6 +131,7 @@ export function renderPlaceholder(
     height: '100%',
     backgroundColor,
     color: foregroundColor,
+    fontWeight,
     padding,
     ...(backgroundImage ? { backgroundImage } : {}),
     ...(layout ? { position: 'relative', overflow: 'hidden' } : {}),
