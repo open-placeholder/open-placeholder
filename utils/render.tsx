@@ -16,7 +16,19 @@ export function renderPlaceholder(
   const { backgroundColor, foregroundColor, backgroundImage } =
     getPlaceholderStyle(query, layout);
   const spacing = { hero: 56, badge: 32, split: 48, poster: 44 };
-  const padding = Math.min(layout ? spacing[layout] : 20, scale / 4);
+  const paddingParam = query.get('padding');
+  const requestedPadding = paddingParam?.trim() ? Number(paddingParam) : NaN;
+  const padding = Math.min(
+    Math.max(
+      0,
+      Number.isFinite(requestedPadding)
+        ? requestedPadding
+        : layout
+          ? spacing[layout]
+          : 20,
+    ),
+    scale / 4,
+  );
   const textStyles: CSSProperties = {
     fontSize:
       fontSize *

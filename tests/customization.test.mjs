@@ -3,6 +3,25 @@ import test from 'node:test';
 import { startServer } from './helpers/server.mjs';
 import { readPng } from './helpers/png.mjs';
 
+test('padding changes spacing and clamps safely on tiny images', async (t) => {
+  const baseUrl = await startServer(t);
+  const path = '600x400/WWWWWWWWWW';
+  const baseline = await readPng(baseUrl, path);
+  assert.notDeepEqual(await readPng(baseUrl, `${path}?padding=80`), baseline);
+  assert.deepEqual(await readPng(baseUrl, `${path}?padding=invalid`), baseline);
+  assert.deepEqual(
+    await readPng(baseUrl, `${path}?padding=-1`),
+    await readPng(baseUrl, `${path}?padding=0`),
+  );
+  assert.deepEqual(
+    await readPng(baseUrl, `${path}?padding=1000000`),
+    await readPng(baseUrl, `${path}?padding=100`),
+  );
+  for (const layout of ['hero', 'badge', 'split', 'poster']) {
+    await readPng(baseUrl, `1x1/Hello?layout=${layout}&padding=80`, 1, 1);
+  }
+});
+
 test('colors render, explicit colors override palettes, and invalid values fall back', async (t) => {
   const baseUrl = await startServer(t);
   const path = '600x400/Hello';
