@@ -54,22 +54,43 @@ Display custom text instead of dimensions:
 https://openplaceholder.com/600x300/Hello%20World
 ```
 
-### Layout Presets
+### Shortcut Sizes
 
-Use `layout` for common banner compositions. The default layout is unchanged when this parameter is omitted.
+Use common aspect-ratio shortcuts without typing dimensions:
 ```
-https://openplaceholder.com/1200x630/Product%20Launch?layout=hero
-https://openplaceholder.com/800x400/New%20Feature?layout=badge
-https://openplaceholder.com/1200x600/Case%20Study?layout=split
-https://openplaceholder.com/900x1200/Event%20Poster?layout=poster
+https://openplaceholder.com/og/Product%20Launch
+https://openplaceholder.com/banner/Hero%20Banner
+https://openplaceholder.com/wide/Video%20Thumbnail
 ```
+
+| Shortcut | Dimensions | Common use |
+|----------|------------|------------|
+| `og` | 1200x630 | Open Graph/social preview images |
+| `banner` | 1200x400 | Hero and page banners |
+| `wide` | 1600x900 | 16:9 thumbnails and previews |
 
 ## 📖 API Reference
+
+### Layout presets
+
+Use `?layout=hero|badge|split|poster` for banner compositions. Layouts work with dimensions and shortcuts, such as `https://openplaceholder.com/og/Product%20Launch?layout=hero&theme=gradient`. Themes, palettes, and explicit colors override layout colors. Unknown layouts retain the centered default.
+
+### Themes, colors and palettes
+
+Use `?theme=light|dark|mono|gradient` for a theme preset. For example, `https://openplaceholder.com/og/Product%20Launch?theme=gradient` creates a gradient social preview. With no theme, the existing output stays unchanged. Explicit colors override palettes, which override themes. A valid `bg` or palette replaces a theme's gradient with a solid background.
+
+Use `?bg=111827&fg=ffffff` for background and text colors, or `?palette=slate|indigo|sunset` for a named palette. Colors accept three or six hex digits. Explicit `bg` and `fg` values override the palette; invalid values fall back to the palette or the existing default colors.
+
+```
+https://openplaceholder.com/600x400/Hello%20World?palette=indigo
+https://openplaceholder.com/600x400/Hello%20World?bg=111827&fg=ffffff
+```
 
 ### URL Format
 
 ```
 https://openplaceholder.com/[width]x[height]/[text]
+https://openplaceholder.com/[shortcut]/[text]
 ```
 
 ### Parameters
@@ -78,8 +99,8 @@ https://openplaceholder.com/[width]x[height]/[text]
 |-----------|------|-------------|---------|
 | `width` | number | Image width in pixels (1-4000) | `600` |
 | `height` | number | Image height in pixels (1-4000) | `400` |
+| `shortcut` | string | Optional preset size (`og`, `banner`, `wide`) | `og` |
 | `text` | string | Optional custom text (URL encoded) | `Hello%20World` |
-| `layout` | query string | Optional preset: `hero`, `badge`, `split`, or `poster` | `?layout=hero` |
 
 ### Examples
 
@@ -100,22 +121,34 @@ https://openplaceholder.com/[width]x[height]/[text]
 
 #### Banner with Text
 ```html
-<img src="https://openplaceholder.com/1200x400/Hero%20Banner?layout=hero" alt="Hero Banner">
+<img src="https://openplaceholder.com/1200x400/Hero%20Banner" alt="Hero Banner">
 ```
 
-#### Badge Layout
+#### Shortcut Size
 ```html
-<img src="https://openplaceholder.com/800x400/Stable?layout=badge" alt="Stable badge">
+<img src="https://openplaceholder.com/og/Product%20Launch" alt="Product Launch">
 ```
 
-#### Split Layout
-```html
-<img src="https://openplaceholder.com/1200x600/Case%20Study?layout=split" alt="Case Study">
+
+## 🤖 Agent Skill
+
+Use Open Placeholder automatically in generated frontend code with the companion agent skill:
+
+```bash
+npx skills add open-placeholder/skills
 ```
 
-#### Poster Layout
-```html
-<img src="https://openplaceholder.com/900x1200/Event%20Poster?layout=poster" alt="Event Poster">
+Claude Code plugin:
+
+```txt
+/plugin marketplace add open-placeholder/skills
+/plugin install open-placeholder@open-placeholder
+```
+
+Codex plugin:
+
+```bash
+codex plugin marketplace add open-placeholder/skills
 ```
 
 ## 🛠️ Built With
@@ -133,13 +166,13 @@ https://openplaceholder.com/[width]x[height]/[text]
 
 Deploy your own instance with one click:
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fakshitkrnagpal%2Fopen-placeholder)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fopen-placeholder%2Fopen-placeholder)
 
 ### Deploy to Diploi 
 
 Launch Open Placeholder on Diploi in one click and get a live instance running in seconds.
 
-[![launch with diploi button](https://diploi.com/launch-big.svg)](https://diploi.com/launch/akshitkrnagpal/open-placeholder)
+[![launch with diploi button](https://diploi.com/launch-big.svg)](https://diploi.com/launch/open-placeholder/open-placeholder)
 
 Learn more on [Diploi](https://diploi.com/).
 
@@ -147,7 +180,7 @@ Learn more on [Diploi](https://diploi.com/).
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/akshitkrnagpal/open-placeholder.git
+git clone https://github.com/open-placeholder/open-placeholder.git
 cd open-placeholder
 ```
 
@@ -171,6 +204,25 @@ npm run build
 npm run start
 ```
 
+### 🐳 Docker
+
+Pull and run the pre-built image from GitHub Container Registry:
+
+```bash
+docker run --rm -p 3000:3000 ghcr.io/open-placeholder/open-placeholder:latest
+```
+
+Or build the image yourself:
+
+```bash
+git clone https://github.com/open-placeholder/open-placeholder.git
+cd open-placeholder
+docker build -t open-placeholder .
+docker run --rm -p 3000:3000 open-placeholder
+```
+
+The app will be available at `http://localhost:3000`.
+
 ### Environment Variables
 
 No environment variables are required for basic functionality. The app works out of the box!
@@ -186,7 +238,7 @@ No environment variables are required for basic functionality. The app works out
 
 ```bash
 # Clone the repo
-git clone https://github.com/akshitkrnagpal/open-placeholder.git
+git clone https://github.com/open-placeholder/open-placeholder.git
 cd open-placeholder
 
 # Install dependencies
@@ -200,6 +252,9 @@ pnpm build
 
 # Run production build
 pnpm start
+
+# Build and test image endpoints
+pnpm test
 
 # Run linter
 pnpm lint
@@ -244,8 +299,8 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## 📊 Stats
 
-![GitHub stars](https://img.shields.io/github/stars/akshitkrnagpal/open-placeholder?style=social)
-![GitHub forks](https://img.shields.io/github/forks/akshitkrnagpal/open-placeholder?style=social)
+![GitHub stars](https://img.shields.io/github/stars/open-placeholder/open-placeholder?style=social)
+![GitHub forks](https://img.shields.io/github/forks/open-placeholder/open-placeholder?style=social)
 
 ---
 

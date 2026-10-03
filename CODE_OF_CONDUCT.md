@@ -59,8 +59,11 @@ representative at an online or offline event.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported to the community leaders responsible for enforcement at
-placehold@akshitkrnagpal.com.
+reported to the community leaders responsible for enforcement through the Open
+Placeholder GitHub organization. For private reports, use GitHub security
+advisories:
+https://github.com/open-placeholder/open-placeholder/security/advisories/new
+
 All complaints will be reviewed and investigated promptly and fairly.
 
 All community leaders are obligated to respect the privacy and security of the

@@ -1,7 +1,6 @@
 import { z } from 'zod';
 
 const layoutSchema = z.enum(['hero', 'badge', 'split', 'poster']);
-
 export type PlaceholderLayout = z.infer<typeof layoutSchema>;
 
 const optionsSchema = z.object({
@@ -16,40 +15,59 @@ export interface PlaceholderOptions {
   layout?: PlaceholderLayout;
 }
 
+const shortcuts: Record<
+  string,
+  Pick<PlaceholderOptions, 'width' | 'height'>
+> = {
+  og: { width: 1200, height: 630 },
+  banner: { width: 1200, height: 400 },
+  wide: { width: 1600, height: 900 },
+};
+
 export const getPlaceholdOptions = (
   filename: string,
-  layout?: string | null
+  query?: URLSearchParams,
 ): PlaceholderOptions | null => {
   try {
     // Check if there's custom text after a slash
     const parts = filename.split('/');
-    let dimensions = parts[0];
+    const dimensions = parts[0];
+    const parsedLayout = layoutSchema.safeParse(query?.get('layout'));
+    const layout = parsedLayout.success ? parsedLayout.data : undefined;
     let customText: string | undefined;
-    
+
     if (parts.length > 1) {
       // Decode the custom text from URL encoding
       customText = decodeURIComponent(parts.slice(1).join('/'));
     }
-    
-    // Parse dimensions (support both 600x400 and 600 formats)
+
+    // Parse shortcuts or dimensions (support both 600x400 and 600 formats)
+    const shortcut = shortcuts[dimensions];
+
+    if (shortcut) {
+      return {
+        ...shortcut,
+        text: customText,
+        layout,
+      };
+    }
+
     const [width, height] = dimensions.split('x');
-    
+
     // Return null if width is not a valid number
     if (!width || isNaN(Number(width))) {
       return null;
     }
-    
-    const parsedOptions = optionsSchema.parse({ 
-      width, 
-      height: height ?? width 
+
+    const parsedOptions = optionsSchema.parse({
+      width,
+      height: height ?? width,
     });
-    
-    const parsedLayout = layoutSchema.safeParse(layout);
 
     return {
       ...parsedOptions,
       text: customText,
-      layout: parsedLayout.success ? parsedLayout.data : undefined,
+      layout,
     };
   } catch (error) {
     // Return null for any parsing errors
