@@ -71,7 +71,9 @@ https://openplaceholder.com/wide/Video%20Thumbnail
 
 ## 📖 API Reference
 
-### Colors and palettes
+### Themes, colors and palettes
+
+Use `?theme=light|dark|mono|gradient` for a theme preset. For example, `https://openplaceholder.com/og/Product%20Launch?theme=gradient` creates a gradient social preview. With no theme, the existing output stays unchanged. Explicit colors override palettes, which override themes. A valid `bg` or palette replaces a theme's gradient with a solid background.
 
 Use `?bg=111827&fg=ffffff` for background and text colors, or `?palette=slate|indigo|sunset` for a named palette. Colors accept three or six hex digits. Explicit `bg` and `fg` values override the palette; invalid values fall back to the palette or the existing default colors.
 
