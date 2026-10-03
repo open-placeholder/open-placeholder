@@ -17,3 +17,16 @@ test('colors render, explicit colors override palettes, and invalid values fall 
   );
   assert.deepEqual(await readPng(baseUrl, `${path}?bg=red&fg=invalid&palette=unknown`), baseline);
 });
+
+test('themes render and color overrides take precedence', async (t) => {
+  const baseUrl = await startServer(t);
+  const path = '600x400/Hello';
+  const baseline = await readPng(baseUrl, path);
+  for (const theme of ['light', 'dark', 'mono', 'gradient']) {
+    assert.notDeepEqual(await readPng(baseUrl, `${path}?theme=${theme}`), baseline, theme);
+  }
+  for (const override of ['palette=slate', 'bg=abc&fg=123456']) {
+    assert.deepEqual(await readPng(baseUrl, `${path}?theme=gradient&${override}`), await readPng(baseUrl, `${path}?${override}`));
+  }
+  assert.deepEqual(await readPng(baseUrl, `${path}?theme=unknown`), baseline);
+});

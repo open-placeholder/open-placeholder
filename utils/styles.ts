@@ -3,6 +3,10 @@ interface PlaceholderColors {
   foregroundColor: string;
 }
 
+interface PlaceholderStyle extends PlaceholderColors {
+  backgroundImage?: string;
+}
+
 const defaultColors: PlaceholderColors = {
   backgroundColor: '#EEE',
   foregroundColor: '#31343C',
@@ -14,15 +18,29 @@ const palettes = new Map<string, PlaceholderColors>([
   ['sunset', { backgroundColor: '#FDBA74', foregroundColor: '#7C2D12' }],
 ]);
 
+const themes = new Map<string, PlaceholderStyle>([
+  ['light', { backgroundColor: '#F8FAFC', foregroundColor: '#111827' }],
+  ['dark', { backgroundColor: '#111827', foregroundColor: '#FFFFFF' }],
+  ['mono', { backgroundColor: '#FFFFFF', foregroundColor: '#000000' }],
+  ['gradient', {
+    backgroundColor: '#4338CA',
+    foregroundColor: '#FFFFFF',
+    backgroundImage: 'linear-gradient(135deg, #4338CA, #BE185D)',
+  }],
+]);
+
 function parseColor(value: string | null): string | undefined {
   if (!value || !/^#?(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(value)) return undefined;
   return `#${value.replace(/^#/, '')}`;
 }
 
-export function getPlaceholderColors(params: URLSearchParams): PlaceholderColors {
-  const palette = palettes.get(params.get('palette') ?? '') ?? defaultColors;
+export function getPlaceholderStyle(params: URLSearchParams): PlaceholderStyle {
+  const theme: PlaceholderStyle = themes.get(params.get('theme') ?? '') ?? defaultColors;
+  const palette = palettes.get(params.get('palette') ?? '');
+  const backgroundColor = parseColor(params.get('bg'));
   return {
-    backgroundColor: parseColor(params.get('bg')) ?? palette.backgroundColor,
-    foregroundColor: parseColor(params.get('fg')) ?? palette.foregroundColor,
+    backgroundColor: backgroundColor ?? palette?.backgroundColor ?? theme.backgroundColor,
+    foregroundColor: parseColor(params.get('fg')) ?? palette?.foregroundColor ?? theme.foregroundColor,
+    backgroundImage: backgroundColor || palette ? undefined : theme.backgroundImage,
   };
 }

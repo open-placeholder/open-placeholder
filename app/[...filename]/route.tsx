@@ -1,5 +1,5 @@
 import { getPlaceholdOptions } from '@/utils/parser';
-import { getPlaceholderColors } from '@/utils/styles';
+import { getPlaceholderStyle } from '@/utils/styles';
 import { ImageResponse } from 'next/og';
 
 type Params = Promise<{
@@ -42,7 +42,7 @@ export async function GET(_request: Request, { params }: { params: Params }) {
   // Keep room for text even when the image is smaller than the usual padding.
   // Satori's word wrapping can loop if a single glyph exceeds the content width.
   const padding = Math.min(20, Math.min(options.width, options.height) / 4);
-  const { backgroundColor, foregroundColor } = getPlaceholderColors(
+  const { backgroundColor, foregroundColor, backgroundImage } = getPlaceholderStyle(
     new URL(_request.url).searchParams
   );
   
@@ -59,6 +59,7 @@ export async function GET(_request: Request, { params }: { params: Params }) {
           width: '100%',
           height: '100%',
           backgroundColor,
+          backgroundImage,
           color: foregroundColor,
           padding,
         }}
